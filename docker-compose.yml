@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: mediamtx
+    ports:
+      - "8554:8554"       # RTSP
+      - "8888:8888"       # Web UI
+      - "8889:8889"       # WebRTC HTTP signaling
+      - "8189:8189/udp"   # WebRTC ICE/UDP
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml
+    command: ["/mediamtx.yml"]
+    restart: unless-stopped
+
+  ffmpeg-hls:
+    image: linuxserver/ffmpeg:latest
+    container_name: ffmpeg-hls
+    depends_on:
+      - mediamtx
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+    restart: unless-stopped
+
+    command: >
+      -re
+      -fflags nobuffer
+      -i https://livepantau.semarangkota.go.id/7473665d-f072-4450-bc73-2389493e2ecf/video1_stream.m3u8
+      -c copy
+      -f rtsp rtsp://mediamtx:8554/cam1
+
+    # command: >
+    #   -hide_banner
+    #   -loglevel info
+    #   -fflags nobuffer
+    #   -flags low_delay
+    #   -reconnect 1
+    #   -reconnect_streamed 1
+    #   -reconnect_delay_max 2
+    #   -c copy
+    #   -f rtsp rtsp://mediamtx:8554/cam1
+

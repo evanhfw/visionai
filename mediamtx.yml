@@ -1,0 +1,8 @@
+logLevel: info
+
+rtsp: true
+webrtc: true
+
+paths:
+  cam1:
+    source: publisher
