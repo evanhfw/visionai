@@ -3,6 +3,13 @@ logLevel: info
 rtsp: true
 webrtc: true
 
+pathDefaults:
+  source: publisher
+
 paths:
   cam1:
     source: publisher
+  cam2:
+    source: publisher
+
+
