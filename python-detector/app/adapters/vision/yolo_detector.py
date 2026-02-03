@@ -1,14 +1,28 @@
+import numpy as np
 from ultralytics import YOLO
+
+from app.domain.bbox import BBox
 from app.domain.detection import Detection
 from app.usecases.ports import ObjectDetectorPort
 
+
 class YOLODetector(ObjectDetectorPort):
-    def __init__(self, model_path="yolo26m.pt", conf=0.4):
+    """YOLO-based object detector adapter."""
+
+    def __init__(self, model_path: str = "yolo26m.pt", conf: float = 0.4):
         self.model = YOLO(model_path)
         self.conf = conf
 
-    def detect(self, frame):
-        results = self.model(frame, conf=self.conf, verbose=False)
+    def detect(self, image: np.ndarray) -> list[Detection]:
+        """Detect objects in an image using YOLO.
+
+        Args:
+            image: numpy array representing the image (BGR format)
+
+        Returns:
+            List of Detection objects found in the image
+        """
+        results = self.model(image, conf=self.conf, verbose=False)
         detections = []
 
         for r in results:
@@ -22,7 +36,7 @@ class YOLODetector(ObjectDetectorPort):
                     Detection(
                         label=label,
                         confidence=confidence,
-                        bbox=(x1, y1, x2, y2),
+                        bbox=BBox(x_min=x1, y_min=y1, x_max=x2, y_max=y2),
                     )
                 )
 
