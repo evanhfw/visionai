@@ -28,18 +28,6 @@ services:
     command: >
       -re
       -fflags nobuffer
-      -i https://livepantau.semarangkota.go.id/7473665d-f072-4450-bc73-2389493e2ecf/video1_stream.m3u8
+      -i ${HLS_INPUT}
       -c copy
-      -f rtsp rtsp://mediamtx:8554/cam1
-
-    # command: >
-    #   -hide_banner
-    #   -loglevel info
-    #   -fflags nobuffer
-    #   -flags low_delay
-    #   -reconnect 1
-    #   -reconnect_streamed 1
-    #   -reconnect_delay_max 2
-    #   -c copy
-    #   -f rtsp rtsp://mediamtx:8554/cam1
-
+      -f rtsp ${RTSP_OUTPUT}
