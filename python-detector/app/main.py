@@ -1,11 +1,13 @@
 import cv2
+
 from app.adapters.video.rtsp_stream import RTSPStream
 from app.adapters.vision.yolo_detector import YOLODetector
 from app.usecases.detect_objects import DetectObjects
+from app.settings import settings
 
 def main():
-    stream = RTSPStream("rtsp://localhost:8554/cam1")
-    detector = YOLODetector()
+    stream = RTSPStream(settings.STREAM_RELAY_RTSP_URL)
+    detector = YOLODetector(settings.VEHICLE_DETECTOR_MODEL_PATH)
     usecase = DetectObjects(detector)
 
     while True:
